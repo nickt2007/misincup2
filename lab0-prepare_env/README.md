@@ -4,6 +4,25 @@ Due to some reasons, we designed this K8S incubation program to be performed loc
 
 1. Install minikube([here](https://minikube.sigs.k8s.io/docs/start/) the link). Please follow the steps in the page. and execute `minikube tunnel` after minikube installed
 
+use docker for this step
+
+- add Network for VM
+  - Open Hyper-V Manager in Win10
+  - ![](images/75e88d29.png)
+
+- command  
+the start command is
+```shell
+minikube start --driver=docker
+```
+
+sometimes, run above command will encounter some problems as below
+![](images/0435b3e3.png)
+
+try it for multiple times, probably succeed.
+![](images/2eefde9d.png)
+
+
 2. Make sure you have docker installed(for Win10 it is docker desktop). Prepare a free, personal docker hub account as your docker registry.(go to https://hub.docker.com/) *Note that it is your free to choose alternative docker registries, but the following steps may vary and we did not test such docker registry types.* After that, do a `docker login` in terminal.
 
 3. We suggest that set *memory to 13GB*(for istio to run smoothly) and *cpu to at least 3 cores* when you configure the Minikube parameters. (specifically, use `minikube config set memory 13312` and `minikube config set cpus 4` before using `minikube start`).
