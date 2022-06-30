@@ -44,6 +44,16 @@ try it for multiple times, probably succeed.
    Try accessing the UI once installation successful!
    After installed, please use http://localhost:20001, not `https`, to open kiali dashboard in your browser
 
+The command as below
+```shell
+kubectl apply -f C:\Users\xxxx\Downloads\istio-1.14.1-win\istio-1.14.1\samples\addons\kiali.yaml
+```
+
+after Kiali install, run command 'minikube service kiali -n istio-system'. 【if don't execute this command, it still works for waiting for a while??】
+then run 'kubectl port-forward svc/kiali 20001:20001 -n istio-system'
+
+![](images/2f29bbe1.png)
+
 10. (*Optional*) Use `helm repo add` cmd to add your helm repository to your local environment.
 
 11. Install Apache Maven cmd tool.
