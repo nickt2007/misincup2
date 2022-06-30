@@ -4,6 +4,25 @@ Due to some reasons, we designed this K8S incubation program to be performed loc
 
 1. Install minikube([here](https://minikube.sigs.k8s.io/docs/start/) the link). Please follow the steps in the page. and execute `minikube tunnel` after minikube installed
 
+use docker for this step
+
+- add Network for VM
+    - Open Hyper-V Manager in Win10
+    - ![](images/75e88d29.png)
+
+- command  
+  the start command is
+```shell
+minikube start --driver=docker
+```
+
+sometimes, run above command will encounter some problems as below
+![](images/0435b3e3.png)
+
+try it for multiple times, probably succeed.
+![](images/2eefde9d.png)
+
+
 2. Make sure you have docker installed(for Win10 it is docker desktop). Prepare a free, personal docker hub account as your docker registry.(go to https://hub.docker.com/) *Note that it is your free to choose alternative docker registries, but the following steps may vary and we did not test such docker registry types.* After that, do a `docker login` in terminal.
 
 3. We suggest that set *memory to 13GB*(for istio to run smoothly) and *cpu to at least 3 cores* when you configure the Minikube parameters. (specifically, use `minikube config set memory 13312` and `minikube config set cpus 4` before using `minikube start`).
@@ -20,28 +39,28 @@ Due to some reasons, we designed this K8S incubation program to be performed loc
 
 8. Follow instructions [here](https://istio.io/latest/docs/ops/integrations/prometheus/)  to prepare Istio Prometheus addon.
 
-9. Follow instructions [here](https://kiali.io/docs/installation/quick-start/)  to complete Kiali installation. Note step #8 is a prerequisite for this step, otherwise you will face lots of errors in Lab2. 
-Remember to choose Helm install way since we have no istioctl installed. 
-Try accessing the UI once installation successful!
-After installed, please use http://localhost:20001, not `https`, to open kiali dashboard in your browser
+9. Follow instructions [here](https://kiali.io/docs/installation/quick-start/)  to complete Kiali installation. Note step #8 is a prerequisite for this step, otherwise you will face lots of errors in Lab2.
+   Remember to choose Helm install way since we have no istioctl installed.
+   Try accessing the UI once installation successful!
+   After installed, please use http://localhost:20001, not `https`, to open kiali dashboard in your browser
 
 10. (*Optional*) Use `helm repo add` cmd to add your helm repository to your local environment.
 
-11. Install Apache Maven cmd tool. 
+11. Install Apache Maven cmd tool.
 
 12. Add following code snippet to your local maven settings.xml, `servers` tag:
 
     `\<server\>
 
-       \<id\>docker.io\</id\>
+    \<id\>docker.io\</id\>
 
-       \<username\>yourdockerhub_username\</username\>
+    \<username\>yourdockerhub_username\</username\>
 
-       \<password\>yourdockerhub_pw\</password\>
+    \<password\>yourdockerhub_pw\</password\>
 
-       \<configuration\>
-       \<email\>yourdockerhub_mail\</email\>
-       \</configuration\>
+    \<configuration\>
+    \<email\>yourdockerhub_mail\</email\>
+    \</configuration\>
 
     \</server\>`
 
