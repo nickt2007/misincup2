@@ -42,12 +42,31 @@ In this section we describe detailed steps about how to complete the lab. The 3 
    docker run -e server.port=8763 -p 8763:8763 nickta/micincu2:restaurant-service.2022-07-01_13-55-32
    docker run -e server.port=8762 -e restaurantsvc.host=100.64.34.211 -e restaurantsvc.port=8763 -e kitchensvc.host=100.64.34.211 -e kitchensvc.port=8764 -p 8762:8762 nickta/micincu2:order-service.2022-07-01_15-15-31
    ````
-8. Complete all #TODOs in 2 chart repos. We packaged restaurantService and kitchenService together in a single chart, so that you can see how microservices could be organized together using Helm way. You need to fill in the produced image repos and tags in step #3 into `Values.yaml`. 
-9. One important task here is to feed order service chart the kitchen and restaurant K8S service names. Note that we created a `configmap` named 'restaurant-svc-name' in restaurant and kitchen service chart, it contains both restaurant K8S service name and kitchen K8S service name. Fill in correct value in the `configmap` and consider how to reference them in order service chart. Only after that you can call order service interface successfully.
-10. Time to deploy! Go to the chart repo root folder, leverage `helm -n k8sns install chartName . --dry-run` to test your chart, and use `helm -n k8sns install chartName . --debug` to do real K8S deploy!  
-11. Compare your pods status with following screenshot: ![system schema](https://imgur.com/B9aNTtg.png)
-12. Use `kubectl -n default port-forward svc/ordersvc-svc 8762` and then you can call order service API using localhost:8762. Call order service `create order` endpoint and you should get 200 OK response containing simple string: `ordersvc:received:kitchen:received restaurant`. Great! That's all you need to implement in Lab1.
-13. (***Optional challenge task!***) In this task you will implement a HA pattern while rolling updat e order service deployment. Basically, after some code change and conf change, your order service deployment needs to tolerate a rolling upgrade while facing concurrent client requests, and no traffic loses are allowed. Below are some detailed steps.
+7. Complete all #TODOs in 2 chart repos. We packaged restaurantService and kitchenService together in a single chart, so that you can see how microservices could be organized together using Helm way. You need to fill in the produced image repos and tags in step #3 into `Values.yaml`.    
+   refer to submitted code
+8. One important task here is to feed order service chart the kitchen and restaurant K8S service names. Note that we created a `configmap` named 'restaurant-svc-name' in restaurant and kitchen service chart, it contains both restaurant K8S service name and kitchen K8S service name. Fill in correct value in the `configmap` and consider how to reference them in order service chart. Only after that you can call order service interface successfully.
+9. Time to deploy! Go to the chart repo root folder, leverage `helm -n k8sns install chartName . --dry-run` to test your chart, and use `helm -n k8sns install chartName . --debug` to do real K8S deploy!   
+   in restaurantSvcChart Project directory exec below command: 
+   ````shell
+   kubectl delete namespace k8sns
+   kubectl create namespace k8sns
+   kubectl label namespace k8sns istio-injection=enabled --overwrite
+   helm -n k8sns install restaurantsvctest . --debug
+   kubectl get pods --namespace k8sns
+   ````
+   in orderSvcChart Project directory exec below command:
+   ````shell
+   helm -n k8sns install ordersvctest . --debug
+   kubectl get pods --namespace k8sns
+   
+   # helm -n k8sns upgrade -i ordersvctest . --debug  (ifcannot re-use a name that is still in use)
+   ````
+10. Compare your pods status with following screenshot: ![system schema](https://imgur.com/B9aNTtg.png)  
+    mime as below:  
+    ![](images/5065cfb4.png)
+11. Use `kubectl -n default port-forward svc/ordersvc-svc 8762` and then you can call order service API using localhost:8762. Call order service `create order` endpoint and you should get 200 OK response containing simple string: `ordersvc:received:kitchen:received restaurant`. Great! That's all you need to implement in Lab1.  
+    ![](images/6e61ad6a.png)
+12. (***Optional challenge task!***) In this task you will implement a HA pattern while rolling updat e order service deployment. Basically, after some code change and conf change, your order service deployment needs to tolerate a rolling upgrade while facing concurrent client requests, and no traffic loses are allowed. Below are some detailed steps.
 
     1. Change your order service code, add graceful shutdown mechanism to it so that order service could handle left requests even readiness probe already turned to off. Suggested graceful shutdown timeout would be 20s-30s.
     2. Prepare a client which is capable to call order service `create order` endpoint concurrently, Python, Java or any suitable language can fit. Make sure at least 8 threads of concurrency could be provided.
